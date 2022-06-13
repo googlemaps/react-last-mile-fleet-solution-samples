@@ -1,0 +1,21 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "lib": ["DOM", "ES6"],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES6",
+    "importHelpers": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+  },
+  "watchOptions": {
+    "excludeFiles": ["src/main.test.tsx"]
+  }
+}

@@ -1,0 +1,13 @@
+# Dependency directories
+node_modules/
+
+# Expo configuration and settings
+.expo/
+.expo-shared/
+
+# Logs
+npm-debug.*
+
+# Components - will be removed in a future CL
+src/components
+src/shared
