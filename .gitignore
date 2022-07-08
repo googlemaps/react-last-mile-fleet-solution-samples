@@ -7,7 +7,3 @@ node_modules/
 
 # Logs
 npm-debug.*
-
-# Components - will be removed in a future CL
-src/components
-src/shared

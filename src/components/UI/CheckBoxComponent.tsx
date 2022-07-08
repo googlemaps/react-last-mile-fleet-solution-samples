@@ -15,32 +15,31 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
-import MapComponent from './components/MapComponent';
-import { API_KEY } from './utils/consts';
+import { View, StyleSheet, Text } from 'react-native';
+import { CheckBox } from 'react-native-web';
 
-const render = (status: Status) => <Text>{status}</Text>;
-
-const App = () => {
-
+const CheckBoxComponent = ({ label, setRoute, option }) => {
   return (
-    <View>
-      <Text style={styles.header}>React Native for the Web Sample App for Google Last Mile Fleet Solution</Text>
-      <Wrapper apiKey={API_KEY} render={render} version={'beta'} libraries={['journeySharing']} >
-        <MapComponent />
-      </Wrapper>
+    <View style={styles.checkboxContainer}>
+      <CheckBox testID='checkbox' value={option} onValueChange={setRoute} style={styles.checkbox} />
+      <Text style={styles.label}>{label}</Text>
     </View>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: '2em',
-    fontWeight: 'bold',
+  checkbox: {
+    alignSelf: 'auto',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  label: {
+    marginLeft: 8,
+    fontSize: '0.9rem',
     textAlign: 'center',
-    marginVertical: 20
   },
 });
 
-export default App;
+export default CheckBoxComponent;
