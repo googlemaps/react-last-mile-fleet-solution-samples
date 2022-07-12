@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
-import MapComponent from './components/MapComponent';
-import { API_KEY } from './utils/consts';
+import MapComponent from './src/components/MapComponent';
+import { API_KEY } from './src/utils/consts';
 
 const render = (status: Status) => <Text>{status}</Text>;
 

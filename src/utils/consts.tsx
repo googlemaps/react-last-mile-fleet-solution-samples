@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-export const DEFAULT_POLLING_INTERVAL_MS = 3000;
-export const DEFAULT_MAP_OPTIONS = { center: { lat: 37.424069, lng: -122.0916944 }, zoom: 14 };
 export const PROVIDER_URL = 'YOUR_PROVIDER_URL';
 export const PROVIDER_PROJECT_ID = 'YOUR_PROJECT_ID';
 export const API_KEY = 'YOUR_API_KEY';
+
+export const DEFAULT_POLLING_INTERVAL_MS = 3000;
+export const DEFAULT_MAP_OPTIONS = { center: { lat: 37.424069, lng: -122.0916944 }, zoom: 14 };
 
 export const ICON_OPTIONS = {
   USE_DEFAULT: { displayName: 'Use default', icon: null },

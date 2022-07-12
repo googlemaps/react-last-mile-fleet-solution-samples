@@ -25,7 +25,7 @@ const TaskInformation = ({ error, trackingId, task }) => {
   const estimatedCompletionTime = `${task.estimatedCompletionTime?.toDateString()}, ${task.estimatedCompletionTime?.toLocaleTimeString()}`;
   const numStops = task.numStops;
 
-  if (error) {
+  if (trackingId && error) {
     return (
       <View style={styles.view}>
         <Text style={{ ...styles.text, color: 'red' }}>{error}</Text>
@@ -33,7 +33,7 @@ const TaskInformation = ({ error, trackingId, task }) => {
     )
   }
 
-  if (trackingId && (status == 'CLOSED')) {
+  if (trackingId && (status === 'CLOSED')) {
     return (
       <View style={styles.view}>
         <Text style={styles.text}>TASK TYPE: <Text style={styles.bold}>{type}</Text></Text>
@@ -52,7 +52,7 @@ const TaskInformation = ({ error, trackingId, task }) => {
         <Text style={styles.text}>ESTIMATED COMPLETION TIME: <Text style={styles.bold}>{estimatedCompletionTime}</Text></Text>
       </View>
     )
-  } else {
+  } else if (trackingId){
     return (
       <View style={styles.view}>
         <Text style={{ ...styles.text, fontStyle: 'italic' }}>Enter a tracking ID to see shipment information.</Text>
