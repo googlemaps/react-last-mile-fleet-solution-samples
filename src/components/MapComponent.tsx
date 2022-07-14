@@ -25,6 +25,7 @@ import { PROVIDER_URL, PROVIDER_PROJECT_ID, DEFAULT_POLLING_INTERVAL_MS, DEFAULT
 const MapComponent = () => {
   const ref = useRef();
   const trackingId = useRef('');
+  const locationProvider = useRef();
   const journeySharingMap = useRef();
   const [mapOptions, setMapOptions] = useState({});
   const [task, setTask] = useState({
@@ -36,6 +37,12 @@ const MapComponent = () => {
     journeySegments: [],
   });
   const [error, setError] = useState();
+
+  const setTrackingId = (newTrackingId) => {
+    trackingId.current = newTrackingId;
+    journeySharingMap.current.locationProvider.trackingId = newTrackingId;
+    setError(undefined);
+  };
 
   const authTokenFetcher = async () => {
     const response = await fetch(
@@ -49,25 +56,21 @@ const MapComponent = () => {
     };
   };
 
-  const locationProvider = new google.maps.journeySharing.FleetEngineShipmentLocationProvider({
-    projectId: PROVIDER_PROJECT_ID,
-    authTokenFetcher,
-    trackingId: trackingId.current,
-    pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
-  });
-
-  const setTrackingId = (newTrackingId) => {
-    trackingId.current = newTrackingId;
-    journeySharingMap.current.locationProvider.trackingId = newTrackingId;
-    setError(undefined);
-  }
+  useEffect(() => {
+    locationProvider.current = new google.maps.journeySharing.FleetEngineShipmentLocationProvider({
+      projectId: PROVIDER_PROJECT_ID,
+      authTokenFetcher,
+      trackingId: trackingId.current,
+      pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+    });
+  }, []);
 
   useEffect(() => {
-    locationProvider.addListener('error', e => {
+    locationProvider.current?.addListener('error', e => {
       setError(e.error.message);
     });
 
-    locationProvider.addListener('update', e => {
+    locationProvider.current?.addListener('update', e => {
       setTask((prev) => ({
         ...prev,
         status: e.task?.status,
@@ -76,12 +79,12 @@ const MapComponent = () => {
         numStops: e.task?.remainingVehicleJourneySegments?.length,
         estimatedCompletionTime: e.task?.estimatedCompletionTime,
         journeySegments: e.task?.remainingVehicleJourneySegments,
-      }))
+      }));
     });
 
     journeySharingMap.current = new google.maps.journeySharing.JourneySharingMapView({
       element: ref.current,
-      locationProvider,
+      locationProvider: locationProvider.current,
       ...mapOptions
     });
 

@@ -20,10 +20,13 @@ import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 const TaskIdComponent = ({ setTrackingId }) => {
   const [text, setText] = useState();
   const onPress = () => setTrackingId(text);
+  const onKeyPress = (e) => {
+    if (e.nativeEvent.key === 'Enter') onPress();
+  };
 
   return (
     <View>
-      <TextInput style={styles.input} placeholder={'Tracking ID'} onChangeText={text => setText(text)} />
+      <TextInput style={styles.input} placeholder={'Tracking ID'} onChangeText={text => setText(text)} onKeyPress={onKeyPress}/>
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.text}>Find</Text>
       </Pressable>
