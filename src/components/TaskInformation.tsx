@@ -14,65 +14,91 @@
  * limitations under the License.
  */
 
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 const TaskInformation = ({ error, trackingId, task }) => {
+  let message, type, status, outcome, estimatedCompletionTime, numStops;
 
-  const type = task.type;
-  const status = task.status;
-  const outcome = task.outcome;
-  const estimatedCompletionTime = `${task.estimatedCompletionTime?.toDateString()}, ${task.estimatedCompletionTime?.toLocaleTimeString()}`;
-  const numStops = task.numStops;
+  if (task) {
+    type = task.type;
+    status = task.status;
+    outcome = task.outcome;
+    estimatedCompletionTime = `${task.estimatedCompletionTime?.toDateString()}, ${task.estimatedCompletionTime?.toLocaleTimeString()}`;
+    numStops = task.numStops;
+  }
 
-  if (trackingId && error) {
+
+  if (numStops >= 2) {
+    message = <Text>{numStops} stops away</Text>;
+  } else if (numStops === 1) {
+    message = <Text>You are the next stop</Text>;
+  } else {
+    message = <Text>{outcome}</Text>;
+  };
+
+  if (error) {
     return (
       <View style={styles.view}>
         <Text style={{ ...styles.text, color: 'red' }}>{error}</Text>
       </View>
-    )
+    );
   }
 
   if (trackingId && (status === 'CLOSED')) {
     return (
       <View style={styles.view}>
-        <Text style={styles.text}>TASK TYPE: <Text style={styles.bold}>{type}</Text></Text>
-        <Text style={styles.text}>TASK STATUS: <Text style={styles.bold}>{status}</Text></Text>
-        <Text style={styles.text}>TASK OUTCOME: <Text style={styles.bold}>{outcome}</Text></Text>
+        <Text style={styles.message}>{message}</Text>
+        <Text style={styles.label}>TASK TYPE</Text>
+        <Text style={styles.text}>{type}</Text>
+        <Text style={styles.label}>TASK STATUS</Text>
+        <Text style={styles.text}>{status}</Text>
+        <Text style={styles.label}>TASK OUTCOME</Text>
+        <Text style={styles.text}>{outcome}</Text>
       </View>
-    )
+    );
   }
 
   if (trackingId && status) {
     return (
       <View style={styles.view}>
-        <Text style={styles.text}>TASK TYPE: <Text style={styles.bold}>{type}</Text></Text>
-        <Text style={styles.text}>TASK STATUS: <Text style={styles.bold}>{status}</Text></Text>
-        <Text style={styles.text}># STOPS REMAINING: <Text style={styles.bold}>{numStops}</Text></Text>
-        <Text style={styles.text}>ESTIMATED COMPLETION TIME: <Text style={styles.bold}>{estimatedCompletionTime}</Text></Text>
+        <Text style={styles.message}>{message}</Text>
+        <Text style={styles.label}>TASK TYPE</Text>
+        <Text style={styles.text}>{type}</Text>
+        <Text style={styles.label}>TASK STATUS</Text>
+        <Text style={styles.text}>{status}</Text>
+        <Text style={styles.label}># STOPS REMAINING</Text>
+        <Text style={styles.text}>{numStops}</Text>
+        <Text style={styles.label}>ESTIMATED COMPLETION TIME</Text>
+        <Text style={styles.text}>{estimatedCompletionTime}</Text>
       </View>
-    )
-  } else if (trackingId){
+    );
+  } else {
     return (
       <View style={styles.view}>
-        <Text style={{ ...styles.text, fontStyle: 'italic' }}>Enter a tracking ID to see shipment information.</Text>
+        <Text style={{ ...styles.text, fontStyle: 'italic' }}>
+          Enter a tracking ID to see shipment information.
+        </Text>
       </View>
-    )
+    );
   }
-}
+};
 
 const styles = StyleSheet.create({
   view: {
     padding: 5,
-    width: '70%',
-    marginLeft: 20
+    marginTop: 10,
+  },
+  label: {
+    fontSize: '0.725rem',
   },
   text: {
-    marginBottom: 15,
-    fontSize: '0.8rem'
+    marginVertical: 10,
+    fontSize: '1rem',
   },
-  bold: {
-    fontWeight: 'bold',
+  message: {
+    fontSize: '1.25rem',
+    marginBottom: 15,
   }
 });
 

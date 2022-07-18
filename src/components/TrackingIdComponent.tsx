@@ -18,15 +18,19 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 
 const TaskIdComponent = ({ setTrackingId }) => {
-  const [text, setText] = useState();
+  const [text, setText] = useState<string>();
+
   const onPress = () => setTrackingId(text);
   const onKeyPress = (e) => {
     if (e.nativeEvent.key === 'Enter') onPress();
   };
 
   return (
-    <View>
-      <TextInput style={styles.input} placeholder={'Tracking ID'} onChangeText={text => setText(text)} onKeyPress={onKeyPress}/>
+    <View style={styles.container}>
+      <TextInput style={styles.input}
+        placeholder={'Tracking ID'}
+        onChangeText={text => setText(text)}
+        onKeyPress={onKeyPress} />
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.text}>Find</Text>
       </Pressable>
@@ -35,29 +39,32 @@ const TaskIdComponent = ({ setTrackingId }) => {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
   input: {
-    flex: 1,
-    marginLeft: 25,
-    marginBottom: 15,
-    marginTop: 60,
+    marginLeft: 15,
     padding: 7,
-    width: '75%',
+    width: 290,
     borderWidth: 1,
     paddingLeft: 10,
-    fontSize: '0.8rem',
-    margin: 'auto',
+    fontSize: '0.75rem',
+    borderRadius: 5,
   },
   button: {
-    marginLeft: 25,
+    marginLeft: 10,
     backgroundColor: '#2460ad',
-    padding: 5,
-    width: 70,
-    borderRadius: 2,
+    padding: 7,
+    width: 50,
+    borderRadius: 5,
   },
   text: {
     color: '#FFFFFF',
-    fontSize: '0.9rem',
+    fontSize: '1rem',
     textAlign: 'center',
+    fontWeight: 'bold',
   }
 });
 

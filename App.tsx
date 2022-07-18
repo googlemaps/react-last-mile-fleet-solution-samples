@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import MapComponent from './src/components/MapComponent';
@@ -25,9 +25,11 @@ const render = (status: Status) => <Text>{status}</Text>;
 const App = () => {
 
   return (
-    <View>
-      <Text style={styles.header}>React Native for the Web Sample App for Google Last Mile Fleet Solution</Text>
-      <Wrapper apiKey={API_KEY} render={render} version={'beta'} libraries={['journeySharing']} >
+    <View style={styles.appcontent}>
+      <Text style={styles.header}>
+        React Native for Web Sample App for Google Last Mile Fleet Solution
+      </Text>
+      <Wrapper apiKey={API_KEY} render={render} version={'beta'} libraries={['journeySharing']}>
         <MapComponent />
       </Wrapper>
     </View>
@@ -35,12 +37,21 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: '2em',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20
+  appcontent: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    height: '100%',
+    flexWrap: 'wrap',
   },
+  header: {
+    fontSize: '1.75em',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginVertical: 10,
+    marginHorizontal: 10,
+    flexWrap: 'wrap',
+  }
 });
 
 export default App;

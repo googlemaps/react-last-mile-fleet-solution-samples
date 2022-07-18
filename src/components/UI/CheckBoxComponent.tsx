@@ -18,10 +18,15 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { CheckBox } from 'react-native-web';
 
-const CheckBoxComponent = ({ label, setRoute, option }) => {
+const CheckBoxComponent = ({ label, setRoute, option, setIsOptionsChanged }) => {
+  const onValueChange = (value: boolean) => {
+    setRoute(value);
+    setIsOptionsChanged(true);
+  };
+
   return (
     <View style={styles.checkboxContainer}>
-      <CheckBox testID='checkbox' value={option} onValueChange={setRoute} style={styles.checkbox} />
+      <CheckBox style={styles.checkbox} value={option} onValueChange={onValueChange} />
       <Text style={styles.label}>{label}</Text>
     </View>
   );
@@ -37,9 +42,9 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 8,
-    fontSize: '0.9rem',
+    fontSize: '1rem',
     textAlign: 'center',
-  },
+  }
 });
 
 export default CheckBoxComponent;

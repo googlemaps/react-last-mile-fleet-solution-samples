@@ -14,6 +14,7 @@
     "importHelpers": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
+    "strictNullChecks": true,
   },
   "watchOptions": {
     "excludeFiles": ["src/main.test.tsx"]
