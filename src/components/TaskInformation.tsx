@@ -16,25 +16,25 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { TaskModel } from './MapComponent';
 
-const TaskInformation = ({ error, trackingId, task }) => {
-  let message, type, status, outcome, estimatedCompletionTime, numStops;
+interface Props {
+  error: string | undefined,
+  trackingId: string,
+  task: TaskModel,
+};
 
-  if (task) {
-    type = task.type;
-    status = task.status;
-    outcome = task.outcome;
-    estimatedCompletionTime = `${task.estimatedCompletionTime?.toDateString()}, ${task.estimatedCompletionTime?.toLocaleTimeString()}`;
-    numStops = task.numStops;
-  }
-
+const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
+  let message;
+  const estimatedCompletionTime = task.estimatedCompletionTime?.toLocaleString();
+  const numStops = task.journeySegments ? task.journeySegments.length : 0;
 
   if (numStops >= 2) {
-    message = <Text>{numStops} stops away</Text>;
+    message = `${numStops} stops away`;
   } else if (numStops === 1) {
-    message = <Text>You are the next stop</Text>;
+    message = 'You are the next stop';
   } else {
-    message = <Text>{outcome}</Text>;
+    message = task.outcome;
   };
 
   if (error) {
@@ -45,28 +45,28 @@ const TaskInformation = ({ error, trackingId, task }) => {
     );
   }
 
-  if (trackingId && (status === 'CLOSED')) {
+  if (trackingId && (task.status === 'CLOSED')) {
     return (
       <View style={styles.view}>
         <Text style={styles.message}>{message}</Text>
         <Text style={styles.label}>TASK TYPE</Text>
-        <Text style={styles.text}>{type}</Text>
+        <Text style={styles.text}>{task.type}</Text>
         <Text style={styles.label}>TASK STATUS</Text>
-        <Text style={styles.text}>{status}</Text>
+        <Text style={styles.text}>{task.status}</Text>
         <Text style={styles.label}>TASK OUTCOME</Text>
-        <Text style={styles.text}>{outcome}</Text>
+        <Text style={styles.text}>{task.outcome}</Text>
       </View>
     );
   }
 
-  if (trackingId && status) {
+  if (trackingId && task.status) {
     return (
       <View style={styles.view}>
         <Text style={styles.message}>{message}</Text>
         <Text style={styles.label}>TASK TYPE</Text>
-        <Text style={styles.text}>{type}</Text>
+        <Text style={styles.text}>{task.type}</Text>
         <Text style={styles.label}>TASK STATUS</Text>
-        <Text style={styles.text}>{status}</Text>
+        <Text style={styles.text}>{task.status}</Text>
         <Text style={styles.label}># STOPS REMAINING</Text>
         <Text style={styles.text}>{numStops}</Text>
         <Text style={styles.label}>ESTIMATED COMPLETION TIME</Text>
@@ -90,14 +90,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   label: {
-    fontSize: '0.725rem',
+    fontSize: 10,
   },
   text: {
     marginVertical: 10,
-    fontSize: '1rem',
+    fontSize: 16,
   },
   message: {
-    fontSize: '1.25rem',
+    fontSize: 20,
     marginBottom: 15,
   }
 });

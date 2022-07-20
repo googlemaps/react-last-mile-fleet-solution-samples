@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     width: 290,
     borderWidth: 1,
     paddingLeft: 10,
-    fontSize: '0.75rem',
+    fontSize: 12,
     borderRadius: 5,
   },
   button: {
@@ -62,9 +62,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#FFFFFF',
-    fontSize: '1rem',
+    fontSize: 16,
     textAlign: 'center',
-    fontWeight: 'bold',
   }
 });
 

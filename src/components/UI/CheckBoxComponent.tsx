@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 8,
-    fontSize: '1rem',
+    fontSize: 16,
     textAlign: 'center',
   }
 });

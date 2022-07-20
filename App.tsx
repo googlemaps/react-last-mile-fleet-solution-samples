@@ -23,13 +23,14 @@ import { API_KEY } from './src/utils/consts';
 const render = (status: Status) => <Text>{status}</Text>;
 
 const App = () => {
-
   return (
-    <View style={styles.appcontent}>
+    <View>
       <Text style={styles.header}>
         React Native for Web Sample App for Google Last Mile Fleet Solution
       </Text>
-      <Wrapper apiKey={API_KEY} render={render} version={'beta'} libraries={['journeySharing']}>
+      <Wrapper apiKey={API_KEY} render={render} version={'beta'}
+        // @ts-ignore
+        libraries={['journeySharing']}>
         <MapComponent />
       </Wrapper>
     </View>
@@ -37,20 +38,12 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  appcontent: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    height: '100%',
-    flexWrap: 'wrap',
-  },
   header: {
-    fontSize: '1.75em',
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'left',
     marginVertical: 10,
-    marginHorizontal: 10,
-    flexWrap: 'wrap',
+    marginHorizontal: 15,
   }
 });
 

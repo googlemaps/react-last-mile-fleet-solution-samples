@@ -24,13 +24,12 @@ import {
   DEFAULT_MAP_OPTIONS
 } from '../utils/consts';
 
-interface TaskModel {
-  status?: string,
-  type?: string,
-  outcome?: string,
-  numStops?: number,
-  estimatedCompletionTime?: Date,
-  journeySegments?: google.maps.journeySharing.VehicleWaypoint[] | null,
+export interface TaskModel {
+  status: string | null,
+  type: string | null,
+  outcome: string | null,
+  estimatedCompletionTime: Date | null,
+  journeySegments: google.maps.journeySharing.VehicleWaypoint[] | null,
 };
 
 interface MapOptionsModel {
@@ -39,8 +38,8 @@ interface MapOptionsModel {
 };
 
 const MapComponent = () => {
-  const ref = useRef();
-  const trackingId = useRef<string>();
+  const ref = useRef(null);
+  const trackingId = useRef<string>('');
   const locationProvider = useRef<google.maps.journeySharing.FleetEngineShipmentLocationProvider>();
   const [error, setError] = useState<string | undefined>();
   const [mapOptions, setMapOptions] = useState<MapOptionsModel>({
@@ -48,17 +47,16 @@ const MapComponent = () => {
     showTakenRoutePolyline: true
   });
   const [task, setTask] = useState<TaskModel>({
-    status: '',
-    type: '',
-    outcome: '',
-    numStops: 0,
-    estimatedCompletionTime: new Date(),
-    journeySegments: [],
+    status: null,
+    type: null,
+    outcome: null,
+    estimatedCompletionTime: null,
+    journeySegments: null,
   });
 
   const setTrackingId = (newTrackingId) => {
     trackingId.current = newTrackingId;
-    if (locationProvider.current) locationProvider.current.trackingId = newTrackingId;
+    if (locationProvider.current) locationProvider.current.trackingId = trackingId.current;
   };
 
   const authTokenFetcher = async () => {
@@ -88,12 +86,11 @@ const MapComponent = () => {
     locationProvider.current.addListener('update', (e: google.maps.journeySharing.FleetEngineShipmentLocationProviderUpdateEvent) => {
       if (e.task) {
         setTask({
-          status: e.task?.status,
-          type: e.task?.type,
-          outcome: e.task?.outcome,
-          numStops: e.task?.remainingVehicleJourneySegments?.length,
-          estimatedCompletionTime: e.task?.estimatedCompletionTime,
-          journeySegments: e.task?.remainingVehicleJourneySegments,
+          status: e.task.status,
+          type: e.task.type,
+          outcome: e.task.outcome,
+          estimatedCompletionTime: e.task.estimatedCompletionTime,
+          journeySegments: e.task.remainingVehicleJourneySegments,
         });
         setError(undefined);
       };
@@ -101,31 +98,32 @@ const MapComponent = () => {
   }, []);
 
   useEffect(() => {
-    if (locationProvider.current) locationProvider.current.reset();
+    if (locationProvider.current) {
+      locationProvider.current.reset();
+      const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
+        element: ref.current,
+        locationProvider: locationProvider.current,
+        anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.showAnticipatedRoutePolyline,
+          };
+        },
+        takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.showTakenRoutePolyline,
+          };
+        }
+      };
 
-    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
-      element: ref.current,
-      locationProvider: locationProvider.current,
-      anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.showAnticipatedRoutePolyline,
-        };
-      },
-      takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.showTakenRoutePolyline,
-        };
-      }
-    };
+      const mapView = new google.maps.journeySharing.JourneySharingMapView(
+        mapViewOptions
+      );
 
-    const mapView = new google.maps.journeySharing.JourneySharingMapView(
-      mapViewOptions
-    );
-
-    // Provide default zoom & center so the map loads even if trip ID is bad or stale.
-    mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
+      // Provide default zoom & center so the map loads even if trip ID is bad or stale.
+      mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
+    }
   }, [mapOptions]);
 
   return (
@@ -134,7 +132,7 @@ const MapComponent = () => {
       <View style={styles.container}>
         <View style={styles.stack}>
           <OptionsComponent setMapOptions={setMapOptions} />
-          <TaskInformation style={styles.info} error={error} task={task} trackingId={trackingId} />
+          <TaskInformation error={error} task={task} trackingId={trackingId.current} />
         </View>
         <View style={styles.mapContainer}>
           <View style={styles.map} ref={ref} />
@@ -146,7 +144,6 @@ const MapComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
     flexDirection: 'row',
     marginTop: 10,
   },
@@ -154,22 +151,10 @@ const styles = StyleSheet.create({
     height: '75vh',
   },
   mapContainer: {
-    display: 'flex',
     width: '60%',
     marginRight: 20,
   },
-  header: {
-    fontSize: '2em',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  info: {
-    marginTop: 30,
-    marginBottom: 10,
-  },
   stack: {
-    display: 'flex',
     marginLeft: 15,
     width: '30%',
     flex: 1,

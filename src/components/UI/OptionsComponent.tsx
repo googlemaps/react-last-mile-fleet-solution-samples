@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   header: {
-    fontSize: '1rem',
+    fontSize: 16,
     marginBottom: 10
   },
   button: {
@@ -124,22 +124,21 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   text: {
-    fontSize: '0.75rem',
+    fontSize: 12,
     textAlign: 'center',
   },
   applytext: {
-    fontSize: '0.75rem',
+    fontSize: 12,
     textAlign: 'center',
     color: '#FFFFFF',
     fontWeight: 'bold',
   },
   optionsText: {
-    fontSize: '1rem',
+    fontSize: 16,
     fontWeight: 'bold',
   },
   centeredView: {
     flex: 1,
-    alignItems: 'left',
     marginTop: 85,
     marginLeft: 70,
   },
