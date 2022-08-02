@@ -15,11 +15,22 @@
  */
 
 import React from 'react';
-import renderer from 'react-test-renderer';
-
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import App from '../../App';
 
-it('renders correctly', () => {
-  const tree = renderer.create(<App />).toJSON();
-  expect(tree).toMatchSnapshot();
+beforeAll(() => {
+  Enzyme.configure({ adapter: new Adapter() });
+});
+
+describe('App', () => {
+  it('matches previous snapshot', async () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.debug()).toMatchSnapshot();
+  });
+
+  it('renders correctly', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.debug()).toBeTruthy();
+  });
 });
