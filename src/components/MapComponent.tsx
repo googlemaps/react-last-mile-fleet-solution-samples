@@ -42,7 +42,7 @@ const MapComponent = () => {
   const trackingId = useRef<string>('');
   const locationProvider = useRef<google.maps.journeySharing.FleetEngineShipmentLocationProvider>();
   const [error, setError] = useState<string | undefined>();
-  const [mapOptions, setMapOptions] = useState<MapOptionsModel>({
+  const mapOptions = useRef<MapOptionsModel>({
     showAnticipatedRoutePolyline: true,
     showTakenRoutePolyline: true
   });
@@ -57,6 +57,12 @@ const MapComponent = () => {
   const setTrackingId = (newTrackingId) => {
     trackingId.current = newTrackingId;
     if (locationProvider.current) locationProvider.current.trackingId = trackingId.current;
+  };
+
+  const setMapOptions = (newMapOptions: MapOptionsModel) => {
+    mapOptions.current.showAnticipatedRoutePolyline = newMapOptions.showAnticipatedRoutePolyline;
+    mapOptions.current.showTakenRoutePolyline = newMapOptions.showTakenRoutePolyline;
+    setTrackingId(trackingId.current);
   };
 
   const authTokenFetcher = async () => {
@@ -95,36 +101,31 @@ const MapComponent = () => {
         setError(undefined);
       };
     });
+
+    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
+      element: ((ref.current as unknown) as Element),
+      locationProvider: locationProvider.current,
+      anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+        return {
+          polylineOptions: defaultPolylineOptions,
+          visible: mapOptions.current.showAnticipatedRoutePolyline,
+        };
+      },
+      takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+        return {
+          polylineOptions: defaultPolylineOptions,
+          visible: mapOptions.current.showTakenRoutePolyline,
+        };
+      }
+    };
+
+    const mapView = new google.maps.journeySharing.JourneySharingMapView(
+      mapViewOptions
+    );
+
+    // Provide default zoom & center so the map loads even if trip ID is bad or stale.
+    mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
   }, []);
-
-  useEffect(() => {
-    if (locationProvider.current) {
-      locationProvider.current.reset();
-      const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
-        element: ref.current,
-        locationProvider: locationProvider.current,
-        anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-          return {
-            polylineOptions: defaultPolylineOptions,
-            visible: mapOptions.showAnticipatedRoutePolyline,
-          };
-        },
-        takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-          return {
-            polylineOptions: defaultPolylineOptions,
-            visible: mapOptions.showTakenRoutePolyline,
-          };
-        }
-      };
-
-      const mapView = new google.maps.journeySharing.JourneySharingMapView(
-        mapViewOptions
-      );
-
-      // Provide default zoom & center so the map loads even if trip ID is bad or stale.
-      mapView.map.setOptions(DEFAULT_MAP_OPTIONS);
-    }
-  }, [mapOptions]);
 
   return (
     <View>
