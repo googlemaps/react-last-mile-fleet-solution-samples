@@ -16,13 +16,22 @@
 
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Pressable, Modal } from 'react-native';
-import CheckBoxComponent from './CheckBoxComponent';
+import { ICON_OPTIONS } from '../../utils/consts';
+import { MapOptionsModel } from '../MapComponent';
+import { CheckBox } from 'react-native-web';
+import DropDown from './DropDown';
 
-const OptionsComponent = ({ setMapOptions }) => {
-  const [showAnticipatedRoutePolyline, setAnticipatedRoutePolyline] =
+interface Props {
+  setMapOptions: (mapOptions: MapOptionsModel) => void;
+}
+
+const OptionsComponent: React.FC<Props> = ({ setMapOptions }) => {
+  const [showAnticipatedRoutePolyline, setShowAnticipatedRoutePolyline] =
     useState<boolean>(true);
-  const [showTakenRoutePolyline, setTakenRoutePolyline] =
+  const [showTakenRoutePolyline, setShowTakenRoutePolyline] =
     useState<boolean>(true);
+  const [destinationIcon, setDestinationIcon] = useState('USE_DEFAULT');
+  const [vehicleIcon, setVehicleICon] = useState('USE_DEFAULT');
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isOptionsChanged, setIsOptionsChanged] = useState<boolean>(false);
@@ -33,7 +42,19 @@ const OptionsComponent = ({ setMapOptions }) => {
     setMapOptions({
       showAnticipatedRoutePolyline: showAnticipatedRoutePolyline,
       showTakenRoutePolyline: showTakenRoutePolyline,
+      destinationMarker: ICON_OPTIONS[destinationIcon],
+      vehicleMarker: ICON_OPTIONS[vehicleIcon],
     });
+  };
+
+  const onShowAnticipatedRoutePolylineChange = (value: boolean) => {
+    setShowAnticipatedRoutePolyline(value);
+    setIsOptionsChanged(true);
+  };
+
+  const onShowTakenRoutePolylineChange = (value: boolean) => {
+    setShowTakenRoutePolyline(value);
+    setIsOptionsChanged(true);
   };
 
   const applyButtonStyleHandler = () => {
@@ -65,39 +86,52 @@ const OptionsComponent = ({ setMapOptions }) => {
 
       <Modal transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.container}>
-              <Text style={styles.header}>Polyline visibility</Text>
-              <View style={styles.checkboxContainer}>
-                <CheckBoxComponent
-                  label={'Show Anticipated Route Polyline'}
-                  setRoute={setAnticipatedRoutePolyline}
-                  option={showAnticipatedRoutePolyline}
-                  setIsOptionsChanged={setIsOptionsChanged}
-                />
-                <CheckBoxComponent
-                  label={'Show Taken Route Polyline'}
-                  setRoute={setTakenRoutePolyline}
-                  option={showTakenRoutePolyline}
-                  setIsOptionsChanged={setIsOptionsChanged}
-                />
-              </View>
+          <View style={styles.container}>
+            <Text style={styles.header}>Polyline visibility</Text>
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                value={showAnticipatedRoutePolyline}
+                onValueChange={onShowAnticipatedRoutePolylineChange}
+                style={styles.checkbox}
+              />
+              <Text style={styles.text}>Show Anticipated Route Polyline</Text>
             </View>
-            <View style={styles.modalButtonContainer}>
-              <Pressable
-                style={styles.cancelbutton}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.text}>Cancel</Text>
-              </Pressable>
-              <Pressable
-                style={applyButtonStyleHandler}
-                onPress={applyButtonPressHandler}
-                disabled={!isOptionsChanged}
-              >
-                <Text style={styles.applytext}>Apply</Text>
-              </Pressable>
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                value={showTakenRoutePolyline}
+                onValueChange={onShowTakenRoutePolylineChange}
+                style={styles.checkbox}
+              />
+              <Text style={styles.text}>Show Taken Route Polyline</Text>
             </View>
+            <Text style={styles.header}>Icons</Text>
+            <DropDown
+              label={'Destination Icon:'}
+              setIcon={setDestinationIcon}
+              option={destinationIcon}
+              setIsOptionsChanged={setIsOptionsChanged}
+            />
+            <DropDown
+              label={'Vehicle Icon:'}
+              setIcon={setVehicleICon}
+              option={vehicleIcon}
+              setIsOptionsChanged={setIsOptionsChanged}
+            />
+          </View>
+          <View style={styles.modalButtonContainer}>
+            <Pressable
+              style={styles.cancelbutton}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.text}>Cancel</Text>
+            </Pressable>
+            <Pressable
+              style={applyButtonStyleHandler}
+              onPress={applyButtonPressHandler}
+              disabled={!isOptionsChanged}
+            >
+              <Text style={styles.applytext}>Apply</Text>
+            </Pressable>
           </View>
         </View>
       </Modal>
@@ -110,12 +144,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginBottom: 20,
   },
-  checkboxContainer: {
-    flexDirection: 'column',
-    marginLeft: 10,
-  },
   header: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
   },
   button: {
@@ -129,7 +159,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     backgroundColor: '#2460ad',
     padding: 5,
-    width: 50,
     borderRadius: 2,
   },
   cancelbutton: {
@@ -137,15 +166,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8e8e8',
     borderWidth: 1,
     padding: 5,
-    width: 50,
     borderRadius: 2,
   },
+  checkbox: {
+    alignSelf: 'auto',
+    marginRight: 8,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+    marginLeft: 15,
+  },
   text: {
-    fontSize: 12,
+    fontSize: 15,
     textAlign: 'center',
   },
   applytext: {
-    fontSize: 12,
+    fontSize: 15,
     textAlign: 'center',
     color: '#FFFFFF',
     fontWeight: 'bold',
@@ -155,11 +192,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   centeredView: {
-    flex: 1,
-    marginTop: 85,
-    marginLeft: 70,
-  },
-  modalView: {
+    marginTop: 100,
+    marginLeft: 100,
     width: 400,
     margin: 20,
     backgroundColor: '#F0F0F0',
