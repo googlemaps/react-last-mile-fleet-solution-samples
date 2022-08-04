@@ -19,8 +19,10 @@ import { View, StyleSheet, Text, Pressable, Modal } from 'react-native';
 import CheckBoxComponent from './CheckBoxComponent';
 
 const OptionsComponent = ({ setMapOptions }) => {
-  const [showAnticipatedRoutePolyline, setAnticipatedRoutePolyline] = useState<boolean>(true);
-  const [showTakenRoutePolyline, setTakenRoutePolyline] = useState<boolean>(true);
+  const [showAnticipatedRoutePolyline, setAnticipatedRoutePolyline] =
+    useState<boolean>(true);
+  const [showTakenRoutePolyline, setTakenRoutePolyline] =
+    useState<boolean>(true);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isOptionsChanged, setIsOptionsChanged] = useState<boolean>(false);
@@ -43,7 +45,7 @@ const OptionsComponent = ({ setMapOptions }) => {
         width: 50,
         borderRadius: 2,
       };
-    };
+    }
 
     return {
       marginLeft: 10,
@@ -67,17 +69,32 @@ const OptionsComponent = ({ setMapOptions }) => {
             <View style={styles.container}>
               <Text style={styles.header}>Polyline visibility</Text>
               <View style={styles.checkboxContainer}>
-                <CheckBoxComponent label={'Show Anticipated Route Polyline'} setRoute={setAnticipatedRoutePolyline}
-                  option={showAnticipatedRoutePolyline} setIsOptionsChanged={setIsOptionsChanged} />
-                <CheckBoxComponent label={'Show Taken Route Polyline'} setRoute={setTakenRoutePolyline}
-                  option={showTakenRoutePolyline} setIsOptionsChanged={setIsOptionsChanged} />
+                <CheckBoxComponent
+                  label={'Show Anticipated Route Polyline'}
+                  setRoute={setAnticipatedRoutePolyline}
+                  option={showAnticipatedRoutePolyline}
+                  setIsOptionsChanged={setIsOptionsChanged}
+                />
+                <CheckBoxComponent
+                  label={'Show Taken Route Polyline'}
+                  setRoute={setTakenRoutePolyline}
+                  option={showTakenRoutePolyline}
+                  setIsOptionsChanged={setIsOptionsChanged}
+                />
               </View>
             </View>
             <View style={styles.modalButtonContainer}>
-              <Pressable style={styles.cancelbutton} onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable
+                style={styles.cancelbutton}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
                 <Text style={styles.text}>Cancel</Text>
               </Pressable>
-              <Pressable style={applyButtonStyleHandler} onPress={applyButtonPressHandler} disabled={!isOptionsChanged}>
+              <Pressable
+                style={applyButtonStyleHandler}
+                onPress={applyButtonPressHandler}
+                disabled={!isOptionsChanged}
+              >
                 <Text style={styles.applytext}>Apply</Text>
               </Pressable>
             </View>
@@ -99,7 +116,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 16,
-    marginBottom: 10
+    marginBottom: 10,
   },
   button: {
     backgroundColor: '#e8e8e8',
@@ -152,7 +169,7 @@ const styles = StyleSheet.create({
   modalButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  }
+  },
 });
 
 export default OptionsComponent;

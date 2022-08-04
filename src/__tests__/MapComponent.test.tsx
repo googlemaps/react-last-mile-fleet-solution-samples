@@ -22,36 +22,38 @@ import TrackingIdComponent from '../components/TrackingIdComponent';
 import OptionsComponent from '../components/UI/OptionsComponent';
 
 beforeAll(() => {
-    Enzyme.configure({ adapter: new Adapter() });
+  Enzyme.configure({ adapter: new Adapter() });
 });
 
 describe('MapComponent', () => {
-    it('matches previous snapshot', async () => {
-        const wrapper = shallow(<MapComponent />);
-        expect(wrapper.debug()).toMatchSnapshot();
-    });
+  it('matches previous snapshot', async () => {
+    const wrapper = shallow(<MapComponent />);
+    expect(wrapper.debug()).toMatchSnapshot();
+  });
 
-    it('renders the app correctly', () => {
-        const wrapper = shallow(<MapComponent />);
-        expect(wrapper.debug()).toBeTruthy();
-    });
+  it('renders the app correctly', () => {
+    const wrapper = shallow(<MapComponent />);
+    expect(wrapper.debug()).toBeTruthy();
+  });
 
-    it('calls setTrackingId on "Find" press', () => {
-        const setTrackingId = jest.fn();
-        const wrapper = shallow(<TrackingIdComponent setTrackingId={setTrackingId} />);
-        wrapper.find('TextInput').simulate('changeText', 'Hello');
-        wrapper.update();
-        wrapper.find('Pressable').simulate('press');
+  it('calls setTrackingId on "Find" press', () => {
+    const setTrackingId = jest.fn();
+    const wrapper = shallow(
+      <TrackingIdComponent setTrackingId={setTrackingId} />
+    );
+    wrapper.find('TextInput').simulate('changeText', 'Hello');
+    wrapper.update();
+    wrapper.find('Pressable').simulate('press');
 
-        expect(setTrackingId).toHaveBeenCalled();
-        expect(setTrackingId).toHaveBeenCalledWith('Hello');
-    });
+    expect(setTrackingId).toHaveBeenCalled();
+    expect(setTrackingId).toHaveBeenCalledWith('Hello');
+  });
 
-    it('renders apply button disabled', () => {
-        const setMapOptions = jest.fn();
-        const wrapper = shallow(<OptionsComponent setMapOptions={setMapOptions} />);
-        const apply = wrapper.find('Pressable').at(2);
+  it('renders apply button disabled', () => {
+    const setMapOptions = jest.fn();
+    const wrapper = shallow(<OptionsComponent setMapOptions={setMapOptions} />);
+    const apply = wrapper.find('Pressable').at(2);
 
-        expect(apply.props().disabled).toBeTruthy();
-    });
+    expect(apply.props().disabled).toBeTruthy();
+  });
 });

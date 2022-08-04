@@ -28,13 +28,17 @@ const App = () => {
       <Text style={styles.header}>
         React Native for Web Sample App for Google Last Mile Fleet Solution
       </Text>
-      <Wrapper apiKey={API_KEY} render={render} version={'beta'}
+      <Wrapper
+        apiKey={API_KEY}
+        render={render}
+        version={'beta'}
         // @ts-ignore
-        libraries={['journeySharing']}>
+        libraries={['journeySharing']}
+      >
         <MapComponent />
       </Wrapper>
     </View>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -44,7 +48,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginVertical: 10,
     marginHorizontal: 15,
-  }
+  },
 });
 
 export default App;

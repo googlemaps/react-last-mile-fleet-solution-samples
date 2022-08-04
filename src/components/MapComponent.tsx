@@ -20,31 +20,34 @@ import TaskInformation from './TaskInformation';
 import OptionsComponent from './UI/OptionsComponent';
 import TrackingIdComponent from './TrackingIdComponent';
 import {
-  PROVIDER_URL, PROVIDER_PROJECT_ID, DEFAULT_POLLING_INTERVAL_MS,
-  DEFAULT_MAP_OPTIONS
+  PROVIDER_URL,
+  PROVIDER_PROJECT_ID,
+  DEFAULT_POLLING_INTERVAL_MS,
+  DEFAULT_MAP_OPTIONS,
 } from '../utils/consts';
 
 export interface TaskModel {
-  status: string | null,
-  type: string | null,
-  outcome: string | null,
-  estimatedCompletionTime: Date | null,
-  journeySegments: google.maps.journeySharing.VehicleWaypoint[] | null,
-};
+  status: string | null;
+  type: string | null;
+  outcome: string | null;
+  estimatedCompletionTime: Date | null;
+  journeySegments: google.maps.journeySharing.VehicleWaypoint[] | null;
+}
 
 interface MapOptionsModel {
-  showAnticipatedRoutePolyline: boolean,
-  showTakenRoutePolyline: boolean,
-};
+  showAnticipatedRoutePolyline: boolean;
+  showTakenRoutePolyline: boolean;
+}
 
 const MapComponent = () => {
   const ref = useRef(null);
   const trackingId = useRef<string>('');
-  const locationProvider = useRef<google.maps.journeySharing.FleetEngineShipmentLocationProvider>();
+  const locationProvider =
+    useRef<google.maps.journeySharing.FleetEngineShipmentLocationProvider>();
   const [error, setError] = useState<string | undefined>();
   const mapOptions = useRef<MapOptionsModel>({
     showAnticipatedRoutePolyline: true,
-    showTakenRoutePolyline: true
+    showTakenRoutePolyline: true,
   });
   const [task, setTask] = useState<TaskModel>({
     status: null,
@@ -56,12 +59,16 @@ const MapComponent = () => {
 
   const setTrackingId = (newTrackingId) => {
     trackingId.current = newTrackingId;
-    if (locationProvider.current) locationProvider.current.trackingId = trackingId.current;
+    if (locationProvider.current) {
+      locationProvider.current.trackingId = trackingId.current;
+    }
   };
 
   const setMapOptions = (newMapOptions: MapOptionsModel) => {
-    mapOptions.current.showAnticipatedRoutePolyline = newMapOptions.showAnticipatedRoutePolyline;
-    mapOptions.current.showTakenRoutePolyline = newMapOptions.showTakenRoutePolyline;
+    mapOptions.current.showAnticipatedRoutePolyline =
+      newMapOptions.showAnticipatedRoutePolyline;
+    mapOptions.current.showTakenRoutePolyline =
+      newMapOptions.showTakenRoutePolyline;
     setTrackingId(trackingId.current);
   };
 
@@ -78,46 +85,56 @@ const MapComponent = () => {
   };
 
   useEffect(() => {
-    locationProvider.current = new google.maps.journeySharing.FleetEngineShipmentLocationProvider({
-      projectId: PROVIDER_PROJECT_ID,
-      authTokenFetcher,
-      trackingId: trackingId.current,
-      pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
-    });
+    locationProvider.current =
+      new google.maps.journeySharing.FleetEngineShipmentLocationProvider({
+        projectId: PROVIDER_PROJECT_ID,
+        authTokenFetcher,
+        trackingId: trackingId.current,
+        pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+      });
 
-    locationProvider.current.addListener('error', (e: google.maps.ErrorEvent) => {
-      setError(e.error.message);
-    });
-
-    locationProvider.current.addListener('update', (e: google.maps.journeySharing.FleetEngineShipmentLocationProviderUpdateEvent) => {
-      if (e.task) {
-        setTask({
-          status: e.task.status,
-          type: e.task.type,
-          outcome: e.task.outcome,
-          estimatedCompletionTime: e.task.estimatedCompletionTime,
-          journeySegments: e.task.remainingVehicleJourneySegments,
-        });
-        setError(undefined);
-      };
-    });
-
-    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions = {
-      element: ((ref.current as unknown) as Element),
-      locationProvider: locationProvider.current,
-      anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.current.showAnticipatedRoutePolyline,
-        };
-      },
-      takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
-        return {
-          polylineOptions: defaultPolylineOptions,
-          visible: mapOptions.current.showTakenRoutePolyline,
-        };
+    locationProvider.current.addListener(
+      'error',
+      (e: google.maps.ErrorEvent) => {
+        setError(e.error.message);
       }
-    };
+    );
+
+    locationProvider.current.addListener(
+      'update',
+      (
+        e: google.maps.journeySharing.FleetEngineShipmentLocationProviderUpdateEvent
+      ) => {
+        if (e.task) {
+          setTask({
+            status: e.task.status,
+            type: e.task.type,
+            outcome: e.task.outcome,
+            estimatedCompletionTime: e.task.estimatedCompletionTime,
+            journeySegments: e.task.remainingVehicleJourneySegments,
+          });
+          setError(undefined);
+        }
+      }
+    );
+
+    const mapViewOptions: google.maps.journeySharing.JourneySharingMapViewOptions =
+      {
+        element: ref.current as unknown as Element,
+        locationProvider: locationProvider.current,
+        anticipatedRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.current.showAnticipatedRoutePolyline,
+          };
+        },
+        takenRoutePolylineSetup: ({ defaultPolylineOptions }) => {
+          return {
+            polylineOptions: defaultPolylineOptions,
+            visible: mapOptions.current.showTakenRoutePolyline,
+          };
+        },
+      };
 
     const mapView = new google.maps.journeySharing.JourneySharingMapView(
       mapViewOptions
@@ -133,15 +150,19 @@ const MapComponent = () => {
       <View style={styles.container}>
         <View style={styles.stack}>
           <OptionsComponent setMapOptions={setMapOptions} />
-          <TaskInformation error={error} task={task} trackingId={trackingId.current} />
+          <TaskInformation
+            error={error}
+            task={task}
+            trackingId={trackingId.current}
+          />
         </View>
         <View style={styles.mapContainer}>
           <View style={styles.map} ref={ref} />
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -160,7 +181,7 @@ const styles = StyleSheet.create({
     width: '30%',
     flex: 1,
     flexDirection: 'column',
-  }
+  },
 });
 
 export default MapComponent;

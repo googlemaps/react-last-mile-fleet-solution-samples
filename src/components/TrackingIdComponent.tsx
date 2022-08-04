@@ -27,16 +27,18 @@ const TaskIdComponent = ({ setTrackingId }) => {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input}
+      <TextInput
+        style={styles.input}
         placeholder={'Tracking ID'}
-        onChangeText={text => setText(text)}
-        onKeyPress={onKeyPress} />
+        onChangeText={(text) => setText(text)}
+        onKeyPress={onKeyPress}
+      />
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.text}>Find</Text>
       </Pressable>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     textAlign: 'center',
-  }
+  },
 });
 
 export default TaskIdComponent;

@@ -19,14 +19,15 @@ import { View, Text, StyleSheet } from 'react-native';
 import { TaskModel } from './MapComponent';
 
 interface Props {
-  error: string | undefined,
-  trackingId: string,
-  task: TaskModel,
-};
+  error: string | undefined;
+  trackingId: string;
+  task: TaskModel;
+}
 
 const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
   let message;
-  const estimatedCompletionTime = task.estimatedCompletionTime?.toLocaleString();
+  const estimatedCompletionTime =
+    task.estimatedCompletionTime?.toLocaleString();
   const numStops = task.journeySegments ? task.journeySegments.length : 0;
 
   if (numStops >= 2) {
@@ -35,7 +36,7 @@ const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
     message = 'You are the next stop';
   } else {
     message = task.outcome;
-  };
+  }
 
   if (error) {
     return (
@@ -45,7 +46,7 @@ const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
     );
   }
 
-  if (trackingId && (task.status === 'CLOSED')) {
+  if (trackingId && task.status === 'CLOSED') {
     return (
       <View style={styles.view}>
         <Text style={styles.message}>{message}</Text>
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 20,
     marginBottom: 15,
-  }
+  },
 });
 
 export default TaskInformation;
