@@ -16,44 +16,54 @@
 
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { CheckBox } from 'react-native-web';
+import { Picker } from '@react-native-picker/picker';
 
-const CheckBoxComponent = ({
+interface Props {
+  label: string;
+  setIcon: (iconName: string) => void;
+  option: string;
+  setIsOptionsChanged: (isOptionsChanged: boolean) => void;
+}
+
+const DropDown: React.FC<Props> = ({
   label,
-  setRoute,
+  setIcon,
   option,
   setIsOptionsChanged,
 }) => {
-  const onValueChange = (value: boolean) => {
-    setRoute(value);
-    setIsOptionsChanged(true);
-  };
-
   return (
-    <View style={styles.checkboxContainer}>
-      <CheckBox
-        style={styles.checkbox}
-        value={option}
-        onValueChange={onValueChange}
-      />
+    <View style={styles.dropdown}>
       <Text style={styles.label}>{label}</Text>
+      <Picker
+        style={styles.containerStyle}
+        itemStyle={styles.label}
+        selectedValue={option}
+        onValueChange={(value) => {
+          setIsOptionsChanged(true);
+          setIcon(value);
+        }}
+      >
+        <Picker.Item label="Default" value="USE_DEFAULT" />
+        <Picker.Item label="Orange Pin" value="ORANGE_PIN" />
+        <Picker.Item label="Green Arrow" value="GREEN_ARROW" />
+      </Picker>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  checkbox: {
-    alignSelf: 'auto',
-  },
-  checkboxContainer: {
+  dropdown: {
     flexDirection: 'row',
-    marginBottom: 15,
+    marginLeft: 15,
+  },
+  containerStyle: {
+    marginLeft: 10,
+    marginBottom: 10,
+    fontSize: 15,
   },
   label: {
-    marginLeft: 8,
-    fontSize: 16,
-    textAlign: 'center',
+    fontSize: 15,
   },
 });
 
-export default CheckBoxComponent;
+export default DropDown;

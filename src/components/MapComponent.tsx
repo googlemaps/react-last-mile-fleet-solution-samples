@@ -24,6 +24,7 @@ import {
   PROVIDER_PROJECT_ID,
   DEFAULT_POLLING_INTERVAL_MS,
   DEFAULT_MAP_OPTIONS,
+  ICON_OPTIONS,
 } from '../utils/consts';
 
 export interface TaskModel {
@@ -34,9 +35,17 @@ export interface TaskModel {
   journeySegments: google.maps.journeySharing.VehicleWaypoint[] | null;
 }
 
-interface MapOptionsModel {
+export interface MapOptionsModel {
   showAnticipatedRoutePolyline: boolean;
   showTakenRoutePolyline: boolean;
+  destinationMarker: {
+    displayName: string;
+    icon: google.maps.Symbol | null;
+  };
+  vehicleMarker: {
+    displayName: string;
+    icon: google.maps.Symbol | null;
+  };
 }
 
 const MapComponent = () => {
@@ -48,6 +57,8 @@ const MapComponent = () => {
   const mapOptions = useRef<MapOptionsModel>({
     showAnticipatedRoutePolyline: true,
     showTakenRoutePolyline: true,
+    destinationMarker: ICON_OPTIONS.USE_DEFAULT,
+    vehicleMarker: ICON_OPTIONS.USE_DEFAULT,
   });
   const [task, setTask] = useState<TaskModel>({
     status: null,
@@ -57,11 +68,10 @@ const MapComponent = () => {
     journeySegments: null,
   });
 
-  const setTrackingId = (newTrackingId) => {
+  const setTrackingId = (newTrackingId: string) => {
     trackingId.current = newTrackingId;
-    if (locationProvider.current) {
+    if (locationProvider.current)
       locationProvider.current.trackingId = trackingId.current;
-    }
   };
 
   const setMapOptions = (newMapOptions: MapOptionsModel) => {
@@ -69,6 +79,8 @@ const MapComponent = () => {
       newMapOptions.showAnticipatedRoutePolyline;
     mapOptions.current.showTakenRoutePolyline =
       newMapOptions.showTakenRoutePolyline;
+    mapOptions.current.destinationMarker = newMapOptions.destinationMarker;
+    mapOptions.current.vehicleMarker = newMapOptions.vehicleMarker;
     setTrackingId(trackingId.current);
   };
 
@@ -133,6 +145,27 @@ const MapComponent = () => {
             polylineOptions: defaultPolylineOptions,
             visible: mapOptions.current.showTakenRoutePolyline,
           };
+        },
+        destinationMarkerSetup: ({ defaultMarkerOptions }) => {
+          if (
+            mapOptions.current.destinationMarker !== ICON_OPTIONS.USE_DEFAULT
+          ) {
+            defaultMarkerOptions.icon =
+              mapOptions.current.destinationMarker.icon;
+          }
+          return { markerOptions: defaultMarkerOptions };
+        },
+        vehicleMarkerSetup: ({ defaultMarkerOptions }) => {
+          if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
+            // Preserve some default icon properties.
+            if (defaultMarkerOptions.icon) {
+              defaultMarkerOptions.icon = Object.assign(
+                defaultMarkerOptions.icon,
+                mapOptions.current.vehicleMarker.icon
+              );
+            }
+          }
+          return { markerOptions: defaultMarkerOptions };
         },
       };
 
