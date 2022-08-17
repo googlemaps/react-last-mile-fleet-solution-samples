@@ -46,7 +46,7 @@ export const API_KEY = 'YOUR_API_KEY';
 
 ### Step 4 - Run the sample app
 
-From this directory, run `npm start web` to start a development server. The app will automatically reload if you change any of the source files.
+From this directory, run `npm run web` to start a development server. The app will automatically reload if you change any of the source files.
 
 ### Step 5 - Start tracking a shipment task
 
