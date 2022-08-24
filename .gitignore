@@ -1,0 +1,9 @@
+# Dependency directories
+node_modules/
+
+# Expo configuration and settings
+.expo/
+.expo-shared/
+
+# Logs
+npm-debug.*
