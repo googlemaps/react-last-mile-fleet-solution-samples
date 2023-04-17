@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@googlemaps/react-wrapper": "^1.1.35",
-    "@react-native-picker/picker": "^2.4.3",
+    "@react-native-picker/picker": "^2.4.10",
     "expo": "^45.0.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
