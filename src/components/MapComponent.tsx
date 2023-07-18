@@ -29,10 +29,9 @@ import {
 
 export interface TaskModel {
   status: string | null;
-  type: string | null;
   outcome: string | null;
   estimatedCompletionTime: Date | null;
-  journeySegments: google.maps.journeySharing.VehicleWaypoint[] | null;
+  remainingStopCount: number | null;
 }
 
 export interface MapOptionsModel {
@@ -62,10 +61,9 @@ const MapComponent = () => {
   });
   const [task, setTask] = useState<TaskModel>({
     status: null,
-    type: null,
     outcome: null,
     estimatedCompletionTime: null,
-    journeySegments: null,
+    remainingStopCount: null,
   });
 
   const setTrackingId = (newTrackingId: string) => {
@@ -88,6 +86,9 @@ const MapComponent = () => {
     const response = await fetch(
       `${PROVIDER_URL}/token/delivery_consumer/${trackingId.current}`
     );
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
     const responseJson = await response.json();
 
     return {
@@ -103,6 +104,23 @@ const MapComponent = () => {
         authTokenFetcher,
         trackingId: trackingId.current,
         pollingIntervalMillis: DEFAULT_POLLING_INTERVAL_MS,
+        destinationMarkerCustomization: (
+          params: google.maps.journeySharing.ShipmentMarkerCustomizationFunctionParams
+        ) => {
+          if (
+            mapOptions.current.destinationMarker !== ICON_OPTIONS.USE_DEFAULT
+          ) {
+            params.marker.setIcon(mapOptions.current.destinationMarker.icon);
+          }
+        },
+
+        deliveryVehicleMarkerCustomization: (
+          params: google.maps.journeySharing.ShipmentMarkerCustomizationFunctionParams
+        ) => {
+          if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
+            params.marker.setIcon(mapOptions.current.vehicleMarker.icon);
+          }
+        },
       });
 
     locationProvider.current.addListener(
@@ -117,13 +135,12 @@ const MapComponent = () => {
       (
         e: google.maps.journeySharing.FleetEngineShipmentLocationProviderUpdateEvent
       ) => {
-        if (e.task) {
+        if (e.taskTrackingInfo) {
           setTask({
-            status: e.task.status,
-            type: e.task.type,
-            outcome: e.task.outcome,
-            estimatedCompletionTime: e.task.estimatedCompletionTime,
-            journeySegments: e.task.remainingVehicleJourneySegments,
+            status: e.taskTrackingInfo.state,
+            outcome: e.taskTrackingInfo.taskOutcome,
+            estimatedCompletionTime: e.taskTrackingInfo.estimatedTaskCompletionTime,
+            remainingStopCount: e.taskTrackingInfo.remainingStopCount,
           });
           setError(undefined);
         }
@@ -145,27 +162,6 @@ const MapComponent = () => {
             polylineOptions: defaultPolylineOptions,
             visible: mapOptions.current.showTakenRoutePolyline,
           };
-        },
-        destinationMarkerSetup: ({ defaultMarkerOptions }) => {
-          if (
-            mapOptions.current.destinationMarker !== ICON_OPTIONS.USE_DEFAULT
-          ) {
-            defaultMarkerOptions.icon =
-              mapOptions.current.destinationMarker.icon;
-          }
-          return { markerOptions: defaultMarkerOptions };
-        },
-        vehicleMarkerSetup: ({ defaultMarkerOptions }) => {
-          if (mapOptions.current.vehicleMarker !== ICON_OPTIONS.USE_DEFAULT) {
-            // Preserve some default icon properties.
-            if (defaultMarkerOptions.icon) {
-              defaultMarkerOptions.icon = Object.assign(
-                defaultMarkerOptions.icon,
-                mapOptions.current.vehicleMarker.icon
-              );
-            }
-          }
-          return { markerOptions: defaultMarkerOptions };
         },
       };
 
