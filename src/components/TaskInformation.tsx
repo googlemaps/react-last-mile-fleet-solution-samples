@@ -28,7 +28,7 @@ const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
   let message;
   const estimatedCompletionTime =
     task.estimatedCompletionTime?.toLocaleString();
-  const numStops = task.journeySegments ? task.journeySegments.length : 0;
+  const numStops = task.remainingStopCount ? task.remainingStopCount : 0;
 
   if (numStops >= 2) {
     message = `${numStops} stops away`;
@@ -50,8 +50,6 @@ const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
     return (
       <View style={styles.view}>
         <Text style={styles.message}>{message}</Text>
-        <Text style={styles.label}>TASK TYPE</Text>
-        <Text style={styles.text}>{task.type}</Text>
         <Text style={styles.label}>TASK STATUS</Text>
         <Text style={styles.text}>{task.status}</Text>
         <Text style={styles.label}>TASK OUTCOME</Text>
@@ -64,8 +62,6 @@ const TaskInformation: React.FC<Props> = ({ error, trackingId, task }) => {
     return (
       <View style={styles.view}>
         <Text style={styles.message}>{message}</Text>
-        <Text style={styles.label}>TASK TYPE</Text>
-        <Text style={styles.text}>{task.type}</Text>
         <Text style={styles.label}>TASK STATUS</Text>
         <Text style={styles.text}>{task.status}</Text>
         <Text style={styles.label}># STOPS REMAINING</Text>
